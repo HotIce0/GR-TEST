@@ -10,13 +10,10 @@ driver.get("http://www.python.org")
 # 确定python在网页源码的title中，即没有打开错网页
 assert "Python" in driver.title
 # 找到name为"q"的元素
-elem = driver.find_element_by_name("q")
-# 清除框内内容
-elem.clear()
-# 在框中填入关键词"pycon"并且发送
-elem.send_keys("pycon")
-# 获得返回值
-elem.send_keys(Keys.RETURN)
+elem = driver.find_elements_by_css_selector("#homepage")
+for e in elem:
+    print(e.get_attribute("class"))
+    print(1)
 # 确定返回值并不是没有找到结果
 assert "No results found." not in driver.page_source
 # 关闭浏览器驱动，非常重要，不然相当于打开了一个网页没有关闭
