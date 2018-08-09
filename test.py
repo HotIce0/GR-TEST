@@ -1,3 +1,7 @@
 import selenide.cneducard as card
+from selenide.dataconfig import BROWSER
 
-card.config('chrome', '首页', '贵州省教育局', '教育局-数据上报-新建报表', 'test')
+# print(BROWSER)
+# browser = input('输入浏览器：')
+# name = input('输入名称：')
+card.config('chrome', '首页', 'test',1)

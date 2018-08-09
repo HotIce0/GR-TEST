@@ -7,6 +7,7 @@ selenide Version 1.0
 """
 
 import datetime
+from time import sleep
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -15,9 +16,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 
+from selenide.dataconfig import WEB
 
-def open_web_driver(browser, url, wait=0):
-    return _Driver[browser](url, wait)
+
+def open_web_driver(browser, url_name, wait=0):
+    return _Driver[browser](WEB[url_name], wait)
 
 
 # 使用谷歌浏览器打开
@@ -74,16 +77,16 @@ def write_time(driver, date, xpath, timeout=''):
     """
     日期格式: 2018-7-26
     """
+    if date == '':
+        return True
     ele = driver.find_element_by_xpath(xpath)
     ele.click()
-    datetime.date.today()
     try:
         date = datetime.datetime.strptime(date, '%Y-%m-%d')
     except ValueError:
         print('日期格式错误')
     date_today = datetime.datetime.strptime(str(datetime.date.today()), '%Y-%m-%d')
-    i_offset = int(str(date_today - date).replace('0:00:00', '0')[0:2])
-
+    i_offset = int(str(date - date_today).replace('0:00:00', '0')[0:2])
     if i_offset == 0:
         ele.send_keys(Keys.LEFT)
         ele.send_keys(Keys.RIGHT)
@@ -117,14 +120,32 @@ def choice_radiogroup(driver, offset, xpath, timeout=''):
 
 
 # 点击按钮
-def click_button(driver, data, xpath, timeout=''):
-    driver.find_element_by_xpath(xpath).click()
-    return True
+def click_button_long(driver, data, xpath, timeout=0.1):
+    try:
+        wait = WebDriverWait(driver, timeout, poll_frequency=0.1)
+        print('开始等待')
+        driver.find_element_by_xpath(xpath)
+        driver.refresh()
+        driver.find_element_by_xpath(xpath).click()
+        return True
+    except TimeoutException:
+        return False
+
+
+def click_button(driver, data, xpath, timeout=0.1):
+    try:
+        wait = WebDriverWait(driver, timeout, poll_frequency=0.1)
+        wait.until(EC.visibility_of_any_elements_located((By.XPATH, xpath)))
+        driver.find_element_by_xpath(xpath).click()
+        return True
+    except TimeoutException:
+        return False
 
 
 # 判断元素，是否从可见到可见
 def elem_is_visible_true_true(driver, xpath, timeout=0.1):
     try:
+        sleep(1)
         wait = WebDriverWait(driver, timeout=timeout, poll_frequency=0.1)
         wait.until(EC.invisibility_of_element_located((By.XPATH, xpath)))
         return False
@@ -133,9 +154,10 @@ def elem_is_visible_true_true(driver, xpath, timeout=0.1):
 
 
 # 判断元素，是否从可见到不可见
-def elem_is_visible_true_false(driver, xpath, timeout=0.1):
+def elem_is_visible_true_false(driver, xpath, timeout=0.5):
     try:
         wait = WebDriverWait(driver, timeout, poll_frequency=0.1)
+        sleep(1)
         wait.until(EC.invisibility_of_element_located((By.XPATH, xpath)))
         return True
     except TimeoutException:
@@ -143,8 +165,9 @@ def elem_is_visible_true_false(driver, xpath, timeout=0.1):
 
 
 # 判断元素，是否从不可见到不可见
-def elem_is_visible_false_false(driver, xpath, timeout=0.1):
+def elem_is_visible_false_false(driver, xpath, timeout=0.5):
     try:
+        sleep(1)
         wait = WebDriverWait(driver, timeout, poll_frequency=0.1)
         wait.until(EC.visibility_of_any_elements_located((By.XPATH, xpath)))
         return False
@@ -153,8 +176,9 @@ def elem_is_visible_false_false(driver, xpath, timeout=0.1):
 
 
 # 判断元素，是否从不可见到可见
-def elem_is_visible_false_true(driver, xpath, timeout=0.1):
+def elem_is_visible_false_true(driver, xpath, timeout=0.5):
     try:
+        sleep(1)
         wait = WebDriverWait(driver, timeout, poll_frequency=0.1)
         wait.until(EC.visibility_of_any_elements_located((By.XPATH, xpath)))
         return True
@@ -163,8 +187,9 @@ def elem_is_visible_false_true(driver, xpath, timeout=0.1):
 
 
 # still exist
-def find_elem_true_true(driver, xpath, time_out=0.1):
+def find_elem_true_true(driver, xpath, time_out=0.5):
     try:
+        sleep(1)
         wait = WebDriverWait(driver, time_out, poll_frequency=0.1)
         wait.until_not(EC.presence_of_element_located((By.XPATH, xpath)))
         return False
@@ -175,6 +200,7 @@ def find_elem_true_true(driver, xpath, time_out=0.1):
 # exist to miss
 def find_elem_true_false(driver, xpath, time_out=0.1):
     try:
+        sleep(1)
         wait = WebDriverWait(driver, time_out, poll_frequency=0.1)
         wait.until_not(EC.presence_of_element_located((By.XPATH, xpath)))
         return True
@@ -185,6 +211,7 @@ def find_elem_true_false(driver, xpath, time_out=0.1):
 # still miss
 def find_elem_false_false(driver, xpath, time_out=0.1):
     try:
+        sleep(1)
         wait = WebDriverWait(driver, time_out, poll_frequency=0.1)
         wait.until(EC.presence_of_element_located((By.XPATH, xpath)))
         return False
@@ -195,6 +222,7 @@ def find_elem_false_false(driver, xpath, time_out=0.1):
 # miss to exist
 def find_elem_false_true(driver, xpath, time_out=0.1):
     try:
+        sleep(1)
         wait = WebDriverWait(driver, time_out, poll_frequency=0.1)
         wait.until(EC.presence_of_element_located((By.XPATH, xpath)))
         return True
@@ -246,5 +274,5 @@ _OP = {'input': write_input,
        'exist': _input_is_exist,
        'visible': _input_is_visible,
        'message': error_tip_message_match,
+       'lbutton': click_button_long,
        }
-
