@@ -1,0 +1,4 @@
+no,res,点击登陆,输入账号,输入密码,点击登陆,点击应用教育,点击学生营养餐,点击信息录入,点击就餐信息
+no,res,button,input,input,button,button,button,lbutton,button
+no,res,/html/body/div[4]/div/a[1],//*[@id="username"],//*[@id="password"],//*[@id="login_btn"],/html/body/div[4]/div/a[4],/html/body/div[6]/div[2]/a[3],//*[@id="app"]/div/div[1]/div[3]/a,//*[@id="app"]/div/div[1]/div[3]/div[3]/a
+no,res,0,0,0,0,0,0,0,0

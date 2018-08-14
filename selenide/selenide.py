@@ -10,6 +10,7 @@ import datetime
 from time import sleep
 
 from selenium import webdriver
+from selenium.webdriver import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -68,46 +69,62 @@ def jump_page(driver, page, xpath, timeout=''):
 
 # 填写input类型
 def write_input(driver, content, xpath, timeout=''):
+    driver.find_element_by_xpath(xpath).clear()
     driver.find_element_by_xpath(xpath).send_keys(content)
     return True
 
 
 # 填写选择时间
 def write_time(driver, date, xpath, timeout=''):
-    """
-    日期格式: 2018-7-26
-    """
-    if date == '':
-        return True
-    ele = driver.find_element_by_xpath(xpath)
-    ele.click()
-    try:
-        date = datetime.datetime.strptime(date, '%Y-%m-%d')
-    except ValueError:
-        print('日期格式错误')
-    date_today = datetime.datetime.strptime(str(datetime.date.today()), '%Y-%m-%d')
-    i_offset = int(str(date - date_today).replace('0:00:00', '0')[0:2])
-    if i_offset == 0:
-        ele.send_keys(Keys.LEFT)
-        ele.send_keys(Keys.RIGHT)
-    elif i_offset < 0:
-        i_offset = -i_offset
-        for i in range(0, i_offset):
-            ele.send_keys(Keys.LEFT)
-    elif i_offset > 0:
-        for j in range(0, i_offset):
-            ele.send_keys(Keys.RIGHT)
-    ele.send_keys(Keys.ENTER)
+    driver.find_element_by_xpath(xpath).clear()
+    driver.find_element_by_xpath(xpath).send_keys(date)
+    driver.find_element_by_xpath(xpath).send_keys(Keys.ENTER)
     return True
+    # """
+    # 日期格式: 2018-7-26
+    # """
+    # if date == '':
+    #     return True
+    # ele = driver.find_element_by_xpath(xpath)
+    # ele.click()
+    # try:
+    #     date = datetime.datetime.strptime(date, '%Y-%m-%d')
+    # except ValueError:
+    #     print('日期格式错误')
+    # date_today = datetime.datetime.strptime(str(datetime.date.today()), '%Y-%m-%d')
+    # i_offset = int(str(date - date_today).replace('0:00:00', '0')[0:2])
+    # if i_offset == 0:
+    #     ele.send_keys(Keys.LEFT)
+    #     ele.send_keys(Keys.RIGHT)
+    # elif i_offset < 0:
+    #     i_offset = -i_offset
+    #     for i in range(0, i_offset):
+    #         ele.send_keys(Keys.LEFT)
+    # elif i_offset > 0:
+    #     for j in range(0, i_offset):
+    #         ele.send_keys(Keys.RIGHT)
+    # ele.send_keys(Keys.ENTER)
+    # return True
 
 
 # 选择下拉列表
 def choice_dropdown(driver, offset, xpath, timeout=''):
+    sleep(1)
     elem = driver.find_element_by_xpath(xpath)
     elem.click()
+    ac1 = ActionChains(driver)
+    ac2 = ActionChains(driver)
+    ac3 = ActionChains(driver)
+    if offset == '':
+        offset = '0'
     for i in range(0, int(offset)):
-        elem.send_keys(Keys.DOWN)
-    elem.send_keys(Keys.ENTER)
+        ac1.send_keys(Keys.DOWN)
+        # elem.send_keys(Keys.DOWN)
+    ac1.send_keys(Keys.ENTER).perform()
+    # elem.send_keys(Keys.ENTER)
+    #  b sleep(3)
+    ac3.send_keys(Keys.ESCAPE).perform()
+    # elem.send_keys(Keys.ESCAPE)
     return True
 
 
@@ -133,24 +150,21 @@ def click_button_long(driver, data, xpath, timeout=0.1):
 
 
 def click_button(driver, data, xpath, timeout=0.1):
-    try:
-        wait = WebDriverWait(driver, timeout, poll_frequency=0.1)
-        wait.until(EC.visibility_of_any_elements_located((By.XPATH, xpath)))
-        driver.find_element_by_xpath(xpath).click()
-        return True
-    except TimeoutException:
-        return False
+    wait = WebDriverWait(driver, timeout, poll_frequency=0.1)
+    wait.until(EC.visibility_of_any_elements_located((By.XPATH, xpath)))
+    driver.find_element_by_xpath(xpath).click()
+    return True
 
 
 # 判断元素，是否从可见到可见
 def elem_is_visible_true_true(driver, xpath, timeout=0.1):
     try:
-        sleep(1)
+        sleep(3)
         wait = WebDriverWait(driver, timeout=timeout, poll_frequency=0.1)
-        wait.until(EC.invisibility_of_element_located((By.XPATH, xpath)))
-        return False
-    except TimeoutException:
+        wait.until(EC.visibility_of_element_located((By.XPATH, xpath)))
         return True
+    except TimeoutException:
+        return False
 
 
 # 判断元素，是否从可见到不可见

@@ -1,0 +1,4 @@
+﻿no,res,点击登陆按钮,输入用户名,密码,登陆,教育应用,数据上报,基础信息, 教师信息管理
+no,res,button,input,input,button,button,button,button,button
+no,res,/html/body/div[4]/div/a[1],//*[@id='username'],//*[@id='password'],//*[@id='login_btn'],/html/body/div[4]/div/a[4],/html/body/div[6]/div[2]/a[2],//*[@id='app']/div/div[1]/div[2]/div[3]/div,//*[@id='app']/div/div[1]/div[2]/div[3]/ol/li[2]/a
+no,res,0,0,0,0,0,0,0,0

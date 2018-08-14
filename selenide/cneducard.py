@@ -1,6 +1,10 @@
+from selenium.webdriver import ActionChains
+
 from selenide.dataconfig import *
 from selenide.selenide import *
 import selenide.csvop as CO
+from selenium.common.exceptions import *
+
 co = None
 _WEB = WEB
 
@@ -59,20 +63,27 @@ def exe_fig(driver, co):
     # 执行测试用例
 
     for csv_list_index in range(0, len(test_case)):
-        print('正在执行测试', test_case[csv_list_index])
-        is_success = True
-        for i in range(2, len(co.get_header())):
-            if not input_data(driver, elements_type[i], test_case[csv_list_index][i], elements_xpath[i],
-                              elements_timeouts[i]):
-                is_success = False
-                print('错误项', test_case[csv_list_index][i])
-        # 写入测试结果
-        if not is_success:
-            test_case[csv_list_index][1] = 'NG'
-        else:
-            test_case[csv_list_index][1] = 'OK'
-        # 刷新页面
-        driver.refresh()
+        if len(test_case[csv_list_index]) != 0:
+            print('正在执行测试', test_case[csv_list_index])
+            is_success = True
+
+            for i in range(2, len(co.get_header())):
+                try:
+                    if not input_data(driver, elements_type[i], test_case[csv_list_index][i], elements_xpath[i],
+                                      elements_timeouts[i]):
+                        is_success = False
+                        print('错误项', test_case[csv_list_index][i])
+                except NoSuchElementException:
+                    print("找不到元素", test_case[csv_list_index])
+                # except WebDriverException:
+                #     print("focus error", test_case[csv_list_index])
+            # 写入测试结果
+            if not is_success:
+                test_case[csv_list_index][1] = 'NG'
+            else:
+                test_case[csv_list_index][1] = 'OK'
+            # 刷新页面
+            driver.refresh()
     # 保存结果
     co.save_csv_data(test_case)
     # driver.close()

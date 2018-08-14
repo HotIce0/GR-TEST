@@ -1,0 +1,4 @@
+no,res,点击添加,输入时间,单机空白画面,下拉框选择,单机空白画面,输入午餐计划就餐人数,点击提交,判断是否提交成功,退出子窗口
+no,res,button,input,button,dropdown,button,input,button,exist,button
+no,res,//*[@id='app']/div/div[2]/div[2]/div/div[1]/div[3]/button,//*[@id='app']/div/div[2]/div[2]/div/div[4]/div/div[2]/form/div[2]/div/div/input,//*[@id='app']/div/div[2]/div[2]/div/div[4]/div/div[2]/form/div[3]/label,//*[@id='app']/div/div[2]/div[2]/div/div[4]/div/div[2]/form/div[3]/div/div/div[1]/input,//*[@id='app']/div/div[2]/div[2]/div/div[4]/div/div[2]/form/div[3]/label,//*[@id='app']/div/div[2]/div[2]/div/div[4]/div/div[2]/form/div[5]/div/div/input,//*[@id='app']/div/div[2]/div[2]/div/div[4]/div/div[2]/form/div[6]/div/button,//*[@id='app']/div/div[2]/div[2]/div/div[4]/div,//*[@id='app']/div/div[2]/div[2]/div/div[4]
+no,res,0,0,0,0,0,0,0,0,0
